@@ -17,7 +17,7 @@ import { Capacitor } from "@capacitor/core";
  * the app to use the locally-bundled assets), set VITE_API_BASE_URL to the
  * full URL of the deployed backend's __PORT_5000__ proxy, for example:
  *
- *     VITE_API_BASE_URL="https://www.perplexity.ai/computer/a/tapcard-3pYyvQkIQJCpUgfnBybOrw/port/5000" \
+ *     VITE_API_BASE_URL="https://tapcard-e4j5.onrender.com" \
  *       npm run build && npx cap sync
  *
  * If `server.url` IS set in capacitor.config.ts (the default in this repo),
@@ -26,7 +26,7 @@ import { Capacitor } from "@capacitor/core";
  * working – no env var needed.
  */
 const NATIVE_API_BASE_FALLBACK =
-  "https://www.perplexity.ai/computer/a/tapcard-3pYyvQkIQJCpUgfnBybOrw/port/5000";
+  "https://tapcard-e4j5.onrender.com";
 
 const RAW_PLACEHOLDER = "__PORT_5000__";
 
