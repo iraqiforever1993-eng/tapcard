@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TapCard</string>
+    <string name="title_activity_main">TapCard</string>
+    <string name="package_name">com.tapcard.app</string>
+    <string name="custom_url_scheme">com.tapcard.app</string>
+</resources>
