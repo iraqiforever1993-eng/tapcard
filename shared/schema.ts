@@ -7,6 +7,12 @@ export const users = sqliteTable("users", {
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
   createdAt: integer("created_at").notNull(),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  subscriptionStatus: text("subscription_status"), // 'trialing'|'active'|'past_due'|'canceled'|null
+  trialEndsAt: integer("trial_ends_at"), // unix ms timestamp
+  shippingAddress: text("shipping_address"), // JSON string
+  physicalCardShipped: integer("physical_card_shipped").default(0),
 });
 
 export const cards = sqliteTable("cards", {
@@ -26,6 +32,12 @@ export const cards = sqliteTable("cards", {
   photoDataUrl: text("photo_data_url"),
   accentColor: text("accent_color").notNull().default("#0ea5e9"),
   updatedAt: integer("updated_at").notNull(),
+  // v2 customization fields
+  layoutStyle: text("layout_style").default("minimal"), // 'minimal'|'photo_forward'|'bold'
+  backgroundColor: text("background_color").default("#0a0a0a"),
+  textColor: text("text_color").default("#ffffff"),
+  backgroundPhotoUrl: text("background_photo_url"),
+  profilePhotoUrl: text("profile_photo_url"),
 });
 
 export const sessions = sqliteTable("sessions", {

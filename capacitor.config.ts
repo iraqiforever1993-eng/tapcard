@@ -14,7 +14,7 @@ const config: CapacitorConfig = {
   webDir: 'dist/public',
   server: {
     // Live, hosted web app – updates flow through automatically.
-    url: 'https://delightful-faloodeh-cf893f.netlify.app/#/',
+    url: 'https://tapcard-e4j5.onrender.com/#/',
     cleartext: false,
     androidScheme: 'https',
   },

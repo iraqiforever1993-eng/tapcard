@@ -27,8 +27,8 @@ export default function Signup() {
       });
       const data = await res.json();
       signIn(data.token, data.user, data.card);
-      toast({ title: "Welcome to TapCard", description: "Your card is ready to customize." });
-      navigate("/dashboard");
+      toast({ title: "Welcome to TapCard", description: "Start your free 7-day trial." });
+      navigate("/checkout");
     } catch (err: any) {
       toast({
         title: "Couldn't create account",
@@ -51,7 +51,7 @@ export default function Signup() {
         <div className="w-full max-w-md">
           <h1 className="text-3xl font-bold tracking-tight">Create your card</h1>
           <p className="mt-2 text-muted-foreground">
-            Free forever. No credit card. 30 seconds.
+            7 days free, then $10.99/mo. Includes a physical TapCard.
           </p>
           <form onSubmit={onSubmit} className="mt-8 space-y-4">
             <div className="space-y-2">

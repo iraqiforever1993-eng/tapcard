@@ -42,6 +42,57 @@ sqlite.exec(`
   );
 `);
 
+// Idempotent migration: add v2 columns if they don't exist
+function columnExists(table: string, col: string): boolean {
+  const rows = sqlite.pragma(`table_info(${table})`) as Array<{ name: string }>;
+  return rows.some((r) => r.name === col);
+}
+
+// users v2 columns
+if (!columnExists("users", "stripe_customer_id")) {
+  sqlite.exec("ALTER TABLE users ADD COLUMN stripe_customer_id TEXT");
+}
+if (!columnExists("users", "stripe_subscription_id")) {
+  sqlite.exec("ALTER TABLE users ADD COLUMN stripe_subscription_id TEXT");
+}
+if (!columnExists("users", "subscription_status")) {
+  sqlite.exec("ALTER TABLE users ADD COLUMN subscription_status TEXT");
+}
+if (!columnExists("users", "trial_ends_at")) {
+  sqlite.exec("ALTER TABLE users ADD COLUMN trial_ends_at INTEGER");
+}
+if (!columnExists("users", "shipping_address")) {
+  sqlite.exec("ALTER TABLE users ADD COLUMN shipping_address TEXT");
+}
+if (!columnExists("users", "physical_card_shipped")) {
+  sqlite.exec(
+    "ALTER TABLE users ADD COLUMN physical_card_shipped INTEGER DEFAULT 0"
+  );
+}
+
+// cards v2 columns
+if (!columnExists("cards", "layout_style")) {
+  sqlite.exec(
+    "ALTER TABLE cards ADD COLUMN layout_style TEXT DEFAULT 'minimal'"
+  );
+}
+if (!columnExists("cards", "background_color")) {
+  sqlite.exec(
+    "ALTER TABLE cards ADD COLUMN background_color TEXT DEFAULT '#0a0a0a'"
+  );
+}
+if (!columnExists("cards", "text_color")) {
+  sqlite.exec(
+    "ALTER TABLE cards ADD COLUMN text_color TEXT DEFAULT '#ffffff'"
+  );
+}
+if (!columnExists("cards", "background_photo_url")) {
+  sqlite.exec("ALTER TABLE cards ADD COLUMN background_photo_url TEXT");
+}
+if (!columnExists("cards", "profile_photo_url")) {
+  sqlite.exec("ALTER TABLE cards ADD COLUMN profile_photo_url TEXT");
+}
+
 export const db = drizzle(sqlite);
 
 export interface IStorage {
@@ -49,6 +100,7 @@ export interface IStorage {
   createUser(email: string, passwordHash: string): User;
   getUserByEmail(email: string): User | undefined;
   getUserById(id: string): User | undefined;
+  updateUser(id: string, patch: Partial<User>): User | undefined;
 
   // cards
   createCard(userId: string, slug: string): Card;
@@ -81,6 +133,21 @@ export class DatabaseStorage implements IStorage {
   }
   getUserById(id: string): User | undefined {
     return db.select().from(users).where(eq(users.id, id)).get();
+  }
+  updateUser(id: string, patch: Partial<User>): User | undefined {
+    const existing = this.getUserById(id);
+    if (!existing) return undefined;
+    const cleaned: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(patch)) {
+      if (v === undefined) continue;
+      cleaned[k] = v;
+    }
+    return db
+      .update(users)
+      .set(cleaned)
+      .where(eq(users.id, id))
+      .returning()
+      .get();
   }
 
   createCard(userId: string, slug: string): Card {
